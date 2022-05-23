@@ -7,6 +7,7 @@ import tkinter.messagebox
 #from tkinter.ttk import *
 #from PIL import *
 import mysql.connector
+print("started the code")
 
 
 root=Tk()
