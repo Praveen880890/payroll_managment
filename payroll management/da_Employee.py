@@ -4,16 +4,17 @@ import datetime
 from tkinter import *
 from tkinter import ttk
 import tkinter.messagebox
+from turtle import width
+from webbrowser import BackgroundBrowser
 #from tkinter.ttk import *
 #from PIL import *
 import mysql.connector
-print("started the code")
 
 
 root=Tk()
 root.title("Employee payroll system")
 p1=PhotoImage(file='mypic.png')
-d1=PhotoImage(file='date.png')
+d1=PhotoImage(file='date.png') 
 root.iconphoto(False,p1)
 root.geometry('%dx%d+0+0'%(root.winfo_screenwidth(),root.winfo_screenheight()))
 #root.attributes('-fullscreen', True)
@@ -23,22 +24,25 @@ root.geometry('%dx%d+0+0'%(root.winfo_screenwidth(),root.winfo_screenheight()))
 #canvas.create_image(0,0,anchor=NW,image=mi)
 
 root.configure(background="powder blue")
-Tops=Frame(root,width=1350,height=500,bd=8,bg="powder blue",relief=SUNKEN)
+
+Tops=Frame(root,width=1350,height=100,bd=5,bg="powder blue",relief=SUNKEN)
 Tops.pack(side=TOP,fill=X)
-f3=Frame(root,width=1340,height=140,bd=8,bg="RED",relief=SUNKEN)
-f3.pack(side=BOTTOM,expand=1,fill=BOTH)
 
-
-f1=Frame(root,width=600,height=600,bd=8,bg="powder blue",relief='sunken',borderwidth=10)
+tops1=Frame(root,width=1350,height=100,bd=5,bg="powder blue",relief=SUNKEN)
+tops1.pack(side=TOP,fill=X)
+f3=Frame(root,width=1340,height=200,bd=1,bg="RED",relief=SUNKEN)
+f3.pack(side=BOTTOM,expand=1,fill=X)
+f1=Frame(tops1,width=600,height=600,bd=5,bg="powder blue",relief='sunken',borderwidth=10)
 f1.pack(side=LEFT,expand=1,fill=X)
-f2=Frame(root,width=300,height=700,bd=8,bg="powder blue")
+
+f2=Frame(tops1,width=300,height=700,bd=1,bg="powder blue",relief=SUNKEN)
 f2.pack(side=RIGHT,fill=X)
 
 
-fla=Frame(f1,width=600,height=200,bd=8,bg="powder blue",relief='ridge')
+fla=Frame(f1,width=600,height=150,bd=5,bg="powder blue",relief='sunken')
 fla.pack(side=TOP,expand=1,fill=X)
-flb=Frame(f1,width=300,height=600,bd=10,bg="powder blue",relief='sunken')
-flb.pack(side=TOP,expand=1,fill=X)
+flb=Frame(f1,width=300,height=200,bd=5,bg="powder blue",relief='sunken')
+flb.pack(side=BOTTOM,expand=1,fill=X)
 
 
 lblinfo=Label(Tops,font=('arial',45,'bold'),text="Employee Payment Management system ",bd=25,fg="light green")
@@ -131,14 +135,17 @@ def save():
         tkinter.messagebox.showinfo("SUCCESS","SUCCESSFULLY INSERTED VALUES")
       con.commit()
       con.close()
+    display()  
 def display():
   con=mysql.connector.connect(host="localhost",username="root",password="root",database="mysql")
   c=con.cursor()
   c.execute("select * from payroll")
   rows= c.fetchall()
-  for i in rows:
-        print(i)
-  con.commit()
+  if len(rows)!=0:
+    view_table.delete(*view_table.get_children())
+    for i in rows:
+          view_table.insert("",END,values=i)
+    con.commit()
   con.close()      
 #=============================== Variables ========================================================
 
@@ -216,39 +223,48 @@ etxnetpay.grid(row=4,column=3)
 payslip=Label(f2,textvariable=DateOfOrder,font=('arial',21,'bold'),fg="red",bg="powder blue")
 payslip.grid(row=0,column=0)
 payslip.config(image=d1,compound=LEFT)
-txtpayslip=Text(f2,height=22,width=34,bd=16,font=('arial',13,'bold'),fg="green",bg="powder blue")
+txtpayslip=Text(f2,height=22,width=34,bd=5,font=('arial',13,'bold'),fg="green",bg="powder blue")
 txtpayslip.grid(row=1,column=0)
 
 
 
 #=============================== buttons ===============================================================
 
-btnsalary=Button(flb,text='Weekly Salary',padx=60,pady=5,bd=8,font=('arial',16,'bold'),width=14,fg="red",bg="light green",command=weeklywages)
-btnsalary.grid(row=0,column=0)
+btnsalary=Button(flb,text='Weekly Salary',padx=75,bd=8,font=('arial',16,'bold'),width=30,fg="red",bg="light green",command=weeklywages)
+btnsalary.pack(side=LEFT)
 
-btnreset=Button(flb,text='Reset',padx=50,pady=9,bd=8,font=('arial',16,'bold'),width=10,command=reset,fg="red",bg="light green")
-btnreset.grid(row=0,column=1)
+btnreset=Button(flb,text='Reset',padx=75,pady=5,bd=8,font=('arial',16,'bold'),width=30,command=reset,fg="red",bg="light green")
+btnreset.pack(side=LEFT)
 
-btnpayslip=Button(flb,text='View Payslip',padx=65,pady=9,bd=8,font=('arial',16,'bold'),width=10,command=enterinfo,fg="red",bg="light green")
-btnpayslip.grid(row=0,column=3)
+btnmysql=Button(flb,text='save',padx=70,pady=9,bd=8,font=('arial',16,'bold'),width=30,command=save,fg="red",bg="light green")
+btnmysql.pack(side=LEFT)
 
-btnmysql=Button(flb,text='save',padx=50,pady=12.3,bd=8,font=('arial',16,'bold'),width=10,command=save,fg="red",bg="light green")
-btnmysql.grid(row=0,column=2)
+btnpayslip=Button(flb,text='View Payslip',padx=75,pady=5,bd=8,font=('arial',16,'bold'),width=30,command=enterinfo,fg="red",bg="light green")
+btnpayslip.pack(side=LEFT)
 
-btnexit=Button(flb,text='Exit System',padx=75,pady=50,bd=8,font=('arial',10,'bold'),width=8,height=8,command=exit,fg="red",bg="light green")
-btnexit.grid(row=0,column=4)
+btndisplay=Button(flb,text='Display',padx=75,pady=5,bd=8,font=('arial',16,'bold'),width=30,command=display,fg="red",bg="light green")
+btndisplay.pack(side=LEFT)
 
-btndisplay=Button(flb,text='Display',padx=30,pady=36,bd=8,font=('arial',16,'bold'),width=10,command=display,fg="red",bg="light green")
-btndisplay.grid(row=0,column=5)
+#btnexit=Button(flb,text='Exit',padx=75,pady=5,bd=8,font=('arial',16,'bold'),width=30,command=exit,fg="red",bg="light green")
+#btnexit.pack(side=LEFT)
+
+#btndisplay=Button(flb,text='Display',padx=75,pady=55,bd=8,font=('arial',16,'bold'),width=10,height=8,command=display,fg="red",bg="light green")
+#btndisplay.pack(side=LEFT)
+
+btnexit=Button(flb,text='Exit',padx=75,pady=5,bd=8,font=('arial',16,'bold'),width=30,command=exit,fg="red",bg="light green")
+btnexit.pack(side=LEFT)
 #===============================scroll bar==================================================================
-"""scroll_x=tkinter.Scrollbar(f3,orient=HORIZONTAL)
-scroll_y=tkinter.Scrollbar(f3,orient=VERTICAL)
+scroll_x=Scrollbar(f3,orient=HORIZONTAL)
+scroll_y=Scrollbar(f3,orient=VERTICAL)
 view_table=ttk.Treeview(f3,column=("NINumber","Name","Address","Employer","HoursWorked","wageshour","tax1","overtime1","payable1","netpay1","DateOfOrder"),xscrollcommand=scroll_x.set,yscrollcommand=scroll_y.set)
+
+#selectmode="extended"or"none" or "browse"   ... default='extended'
+
 scroll_x.pack(side=BOTTOM,fill=X)
 scroll_y.pack(side=RIGHT,fill=Y)
 
-scroll_x=ttk.Scrollbar(command=view_table.xview)
-scroll_y=ttk.Scrollbar(command=view_table.yview)
+scroll_x.config(command=view_table.xview)
+scroll_y.config(command=view_table.yview)
 
 view_table.heading("NINumber",text="Emp ID")
 view_table.heading("Name",text="Name")
@@ -263,8 +279,22 @@ view_table.heading("netpay1",text="Netpay")
 view_table.heading("DateOfOrder",text="Date of pay")
 
 view_table['show']='headings'
+#view_table.pack(fill=BOTH,expand=1)
+
+view_table.column("NINumber",width=20)
+view_table.column("Name",width=80)
+view_table.column("Address",width=100)
+view_table.column("Employer",width=100)
+view_table.column("HoursWorked",width=100)
+view_table.column("wageshour",width=100)
+view_table.column("tax1",width=100)
+view_table.column("overtime1",width=100)
+view_table.column("payable1",width=100)
+view_table.column("netpay1",width=100)
+view_table.column("DateOfOrder",width=100)
+
 view_table.pack(fill=BOTH,expand=1)
-"""#===============================BUTTON IMAGES===============================================================
+#===============================BUTTON IMAGES===============================================================
 
 m1=PhotoImage(file='reset.png')
 btnreset.config(image=m1,compound=TOP)
@@ -275,12 +305,14 @@ btnsalary.config(image=m2,compound=TOP)
 m3=PhotoImage(file='payslip.png')
 btnpayslip.config(image=m3,compound=TOP)
 
-m4=PhotoImage(file='exit.png')
+m4=PhotoImage(file='exit1.png')
 btnexit.config(image=m4,compound=TOP)
 
 m5=PhotoImage(file='save2.png')
 btnmysql.config(image=m5,compound=TOP)
 
+m6=PhotoImage(file='display.png')
+btndisplay.config(image=m6,compound=TOP)
 
 root.mainloop()
 
