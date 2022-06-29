@@ -8,7 +8,7 @@ from turtle import width
 from webbrowser import BackgroundBrowser
 #from tkinter.ttk import *
 #from PIL import *
-import mysql.connector
+import sqlite3
 
 
 root=Tk()
@@ -118,7 +118,7 @@ def save():
   if Name.get()=="":
     tkinter.messagebox.showerror("Error","All fields are required")
   else:
-    con=mysql.connector.connect(host="localhost",username="root",password="root",database="mysql")
+    con=sqlite3.connect("payroll.db")
     c=con.cursor()
 
     try:
@@ -137,7 +137,7 @@ def save():
       con.close()
     display()  
 def display():
-  con=mysql.connector.connect(host="localhost",username="root",password="root",database="mysql")
+  con=sqlite3.connect("payroll.db")
   c=con.cursor()
   c.execute("select * from payroll")
   rows= c.fetchall()
